@@ -290,7 +290,7 @@ if user_input:
     - All In NOI Yield LTM: {all_in_noi_yield_ltm}
     """
 
-    OPENROUTER_API_KEY = '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'  # 🚨 Replace with your real key
+    OPENROUTER_API_KEY = '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'  # 🚨 Replace with your real key
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json"
