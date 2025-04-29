@@ -204,12 +204,26 @@ coords = zip_lookup.get(selected_data['ZipCode'], [np.nan, np.nan])
 if not np.isnan(coords[0]) and not np.isnan(coords[1]):
     st.subheader("Property Location")
 
+
+
     map_data = pd.DataFrame({
         "lat": [coords[0]],
         "lon": [coords[1]],
         "Property": [selected_property],
-        "ZipCode": [selected_data['ZipCode']]
+        "ZipCode": [selected_data['ZipCode']],
+        "NetRevenue": [round(net_revenue_ltm, 2)],
+        "GrossYield": [round(gross_yield_pct * 100, 2)],
+        "NOI": [round(noi_ltm, 2)],
+        "EconomicNOI": [round(economic_noi_ltm, 2)],
+        "AllInNOI": [round(all_in_noi_ltm, 2)],
+        "NOIMargin": [round(noi_margin_ltm * 100, 2)],
+        "EconomicNOIMargin": [round(economic_noi_margin_ltm * 100, 2)],
+        "AllInNOIMargin": [round(all_in_noi_margin_ltm * 100, 2)],
+        "NOIYield": [round(noi_yield_ltm * 100, 2)],
+        "EconomicNOIYield": [round(economic_noi_yield_ltm * 100, 2)],
+        "AllInNOIYield": [round(all_in_noi_yield_ltm * 100, 2)]
     })
+
 
     view_state = pdk.ViewState(latitude=coords[0], longitude=coords[1], zoom=12, pitch=0)
 
@@ -223,10 +237,28 @@ if not np.isnan(coords[0]) and not np.isnan(coords[1]):
         pickable=True,
     )
 
+
+
     tooltip = {
-        "html": "<b>Property:</b> {Property} <br/> <b>ZIP:</b> {ZipCode}",
+        "html": """
+            <b>Property:</b> {Property} <br/>
+            <b>ZIP:</b> {ZipCode} <br/>
+            <hr style="margin:4px 0;">
+            <b>Net Revenue LTM:</b> {NetRevenue} <br/>
+            <b>Gross Yield %:</b> {GrossYield} <br/>
+            <b>NOI LTM:</b> {NOI} <br/>
+            <b>Economic NOI LTM:</b> {EconomicNOI} <br/>
+            <b>All In NOI LTM:</b> {AllInNOI} <br/>
+            <b>NOI Margin %:</b> {NOIMargin} <br/>
+            <b>Economic NOI Margin %:</b> {EconomicNOIMargin} <br/>
+            <b>All In NOI Margin %:</b> {AllInNOIMargin} <br/>
+            <b>NOI Yield %:</b> {NOIYield} <br/>
+            <b>Economic NOI Yield %:</b> {EconomicNOIYield} <br/>
+            <b>All In NOI Yield %:</b> {AllInNOIYield}
+        """,
         "style": {"backgroundColor": "steelblue", "color": "white"}
     }
+
 
     st.pydeck_chart(pdk.Deck(
         layers=[layer],
@@ -304,7 +336,7 @@ if user_input:
     - All In NOI Yield LTM: {all_in_noi_yield_ltm}
     """
 
-    OPENROUTER_API_KEY = st.secrets["api_keys"]["openrouter"]
+    OPENROUTER_API_KEY = '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'
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json"
