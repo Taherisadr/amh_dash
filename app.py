@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import pydeck as pdk
 import requests
-import time  # ⏰ for typing effect
+import time 
 import re
 
 
@@ -21,7 +21,9 @@ def clean_response_text(text):
     return text
 
 # ----------------------
-# 📦 Load Data Functions
+# ----------------------
+# Load Data Functions
+# ----------------------
 # ----------------------
 @st.cache_data
 def load_data():
@@ -37,7 +39,9 @@ def load_zip_lat_lon():
     return zip_lat_lon
 
 # ----------------------
-# 📈 Load the Data
+# ----------------------
+# Load the Data
+# ----------------------
 # ----------------------
 data = load_data()
 zip_lookup = load_zip_lat_lon()
@@ -46,16 +50,14 @@ zip_lookup = load_zip_lat_lon()
 if "scroll_to_section" not in st.session_state:
     st.session_state.scroll_to_section = None
 
-st.title("🏡 Asset Level Data Dashboard")
-
-st.markdown("""
-This dashboard allows you to manually input values for financial features and visualize calculated output features.
-""")
+st.title("🏡 AMH Property Dashboard")
 
 # ----------------------
-# 📋 Sidebar for Input Features
 # ----------------------
-st.sidebar.header("Input Features")
+# Sidebar for Input Features
+# ----------------------
+# ----------------------
+st.sidebar.header("Property Profile")
 
 property_list = data['Property'].unique()
 selected_property = st.sidebar.selectbox("Select Property", property_list)
@@ -117,7 +119,9 @@ if current_inputs != st.session_state.inputs:
     st.rerun()
 
 # ----------------------
-# 📊 Calculate Outputs
+# ----------------------
+# Calculate Outputs
+# ----------------------
 # ----------------------
 
 # Anchor for outputs
@@ -136,7 +140,7 @@ economic_noi_yield_ltm = economic_noi_ltm / market_value if market_value else np
 all_in_noi_yield_ltm = all_in_noi_ltm / market_value if market_value else np.nan
 
 output_df = pd.DataFrame({
-    "Output Features": [
+    "Insights": [
         "Net Revenue LTM",
         "Gross Yield Pct. Asset Value Property Level LTM",
         "NOI LTM",
@@ -165,27 +169,35 @@ output_df = pd.DataFrame({
 })
 
 # ----------------------
-# 📋 Display Table
 # ----------------------
-st.subheader(f"Calculated Output Features for Property: {selected_property}")
-st.table(output_df.style.format({"Values": "{:.4f}"}))
+# Display Table
+# ----------------------
+# ----------------------
+st.subheader(f"Investment Insights for Property: {selected_property}")
+output_df.index = [''] * len(output_df) 
+st.table(output_df.style.format({"Values": "{:.4f}"}))  
+
 
 # ----------------------
-# 💾 Download CSV
+# ----------------------
+# Download CSV
+# ----------------------
 # ----------------------
 def convert_df(df):
     return df.to_csv(index=False).encode('utf-8')
 
 csv = convert_df(output_df)
 st.download_button(
-    label="Download Output Features as CSV",
+    label="Download Insights as CSV",
     data=csv,
-    file_name=f'output_features_{selected_property}.csv',
+    file_name=f'Insights_{selected_property}.csv',
     mime='text/csv',
 )
 
 # ----------------------
-# 🗺️ Show Map
+# ----------------------
+# Show Map
+# ----------------------
 # ----------------------
 coords = zip_lookup.get(selected_data['ZipCode'], [np.nan, np.nan])
 
@@ -225,11 +237,13 @@ else:
     st.warning(f"Missing location for ZIP code: {selected_data['ZipCode']}")
 
 # ----------------------
-# 🔥 Chatbot Assistant (with Typing Effect)
+# ----------------------
+#  Chatbot Assistant (with Typing Effect)
+# ----------------------
 # ----------------------
 st.markdown("---")
 st.markdown('<div id="chatbot"></div>', unsafe_allow_html=True)
-st.header("💬 Need Help? Ask Our Dashboard Assistant!")
+st.header("💬 Need Help? Ask AMH_Wise!")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -289,6 +303,7 @@ if user_input:
     - Economic NOI Yield LTM: {economic_noi_yield_ltm}
     - All In NOI Yield LTM: {all_in_noi_yield_ltm}
     """
+
     OPENROUTER_API_KEY = st.secrets["api_keys"]["openrouter"]
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
@@ -319,7 +334,7 @@ if user_input:
     st.session_state.scroll_to_section = "chatbot"
     st.rerun()
 
-# 🖼️ Show full conversation (with Typing Effect)
+# Show full conversation (with Typing Effect)
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         if msg["role"] == "assistant":
@@ -333,9 +348,10 @@ for msg in st.session_state.messages:
         else:
             st.markdown(msg["content"])
 
-
 # ----------------------
-# 🚀 Smooth Scroll After Rerun
+# ----------------------
+# Smooth Scroll After Rerun
+# ----------------------
 # ----------------------
 if st.session_state.scroll_to_section:
     scroll_target = st.session_state.scroll_to_section
