@@ -335,8 +335,7 @@ if user_input:
     - Economic NOI Yield LTM: {economic_noi_yield_ltm}
     - All In NOI Yield LTM: {all_in_noi_yield_ltm}
     """
-
-    OPENROUTER_API_KEY = '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'
+    OPENROUTER_API_KEY = st.secrets["api_keys"]["openrouter"]
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json"
